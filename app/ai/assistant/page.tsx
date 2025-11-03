@@ -54,7 +54,7 @@ export default function AIAssistantPage() {
     'What tiles work best for kitchens?',
     'Show me modern bathroom designs',
     'Help me choose colors for my living room',
-    'What's the difference between marble and porcelain?',
+    "What's the difference between marble and porcelain?",
   ]
 
   return (
