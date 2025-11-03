@@ -217,13 +217,13 @@ export default function ConsultationPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <Card className="border-luxury shadow-luxury-lg">
-                <CardHeader>
-                  <CardTitle className="font-playfair text-3xl">
+              <Card className="border-2 border-primary/30 shadow-2xl bg-white dark:bg-card">
+                <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 dark:from-primary/10 dark:to-accent/10 border-b border-primary/20 pb-4">
+                  <CardTitle className="font-playfair text-3xl text-foreground font-bold">
                     Book Your Consultation
                   </CardTitle>
                   {selectedConsultation && (
-                    <p className="text-muted-foreground">
+                    <p className="text-muted-foreground font-medium mt-2">
                       {selectedConsultation.title} - {selectedConsultation.duration}
                     </p>
                   )}
