@@ -22,6 +22,7 @@ const playfair = Playfair_Display({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://eleganttiles.co.ke'),
   title: 'Elegant Tiles & Décor Centre Ltd - Luxury Interior Design',
   description:
     'Award-winning interior design and décor company specializing in luxury tiles, custom interiors, and premium design projects.',
