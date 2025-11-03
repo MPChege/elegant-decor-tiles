@@ -1,0 +1,99 @@
+import type { Metadata } from 'next'
+import { Inter, Playfair_Display } from 'next/font/google'
+import { Header } from '@/components/layout/header'
+import { Footer } from '@/components/layout/footer'
+import { StickyCTABar } from '@/components/mobile/sticky-cta-bar'
+import { LoadingScreen } from '@/components/loading-screen'
+import { ScrollToTop } from '@/components/scroll-to-top'
+import { ScrollProgress } from '@/components/scroll-progress'
+import { Toaster } from '@/components/ui/toaster'
+import './globals.css'
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+})
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-playfair',
+  display: 'swap',
+})
+
+export const metadata: Metadata = {
+  title: 'Elegant Tiles & Décor Centre Ltd - Luxury Interior Design',
+  description:
+    'Award-winning interior design and décor company specializing in luxury tiles, custom interiors, and premium design projects.',
+  keywords:
+    'interior design, luxury tiles, décor, custom design, elegant interiors, Kenya',
+  authors: [{ name: 'Elegant Tiles & Décor Centre Ltd' }],
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://eleganttiles.co.ke',
+    siteName: 'Elegant Tiles & Décor Centre',
+    title: 'Elegant Tiles & Décor Centre Ltd - Luxury Interior Design',
+    description:
+      'Award-winning interior design and décor company specializing in luxury tiles and custom design projects.',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Elegant Tiles & Décor Centre',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Elegant Tiles & Décor Centre Ltd',
+    description: 'Award-winning luxury interior design and décor',
+    images: ['/og-image.jpg'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-verification-code',
+  },
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#dc2626" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+      </head>
+      <body
+        className={`${inter.variable} ${playfair.variable} font-inter antialiased smooth-scroll`}
+      >
+        <LoadingScreen />
+        <ScrollProgress />
+        <div className="flex flex-col min-h-screen">
+          <Header />
+          <main className="flex-1 pt-[73px]">{children}</main>
+          <Footer />
+          <StickyCTABar />
+          <ScrollToTop />
+          <Toaster />
+        </div>
+      </body>
+    </html>
+  )
+}
+
