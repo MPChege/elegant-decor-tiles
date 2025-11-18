@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import {
   Palette,
@@ -16,6 +17,8 @@ import {
 import { LuxuryLayout } from '@/components/layout/luxury-layout'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+
+const heroBackground = '/KITCHEN%20and%20DINING/KITCHEN_10%20-%20Photo.png'
 
 const services = [
   {
@@ -116,8 +119,17 @@ export default function ServicesPage() {
   return (
     <LuxuryLayout>
       {/* Hero Section */}
-      <section className="py-20 md:py-32">
-        <div className="container px-6">
+      <section className="relative py-20 md:py-32 overflow-hidden">
+        <Image
+          src={heroBackground}
+          alt="Luxury kitchen installation"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover absolute inset-0 -z-10"
+        />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/70 via-black/40 to-background/95" />
+        <div className="container px-6 text-white">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -127,7 +139,7 @@ export default function ServicesPage() {
             <h1 className="font-playfair text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
               Our <span className="text-luxury-gradient">Services</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground">
+            <p className="text-lg md:text-xl text-white/85">
               Comprehensive design solutions that transform spaces into timeless
               works of art.
             </p>

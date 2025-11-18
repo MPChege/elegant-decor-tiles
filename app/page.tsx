@@ -9,6 +9,7 @@ import { LuxuryLayout } from '@/components/layout/luxury-layout'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
 
 const services = [
   {
@@ -40,41 +41,134 @@ const stats = [
   { value: '50+', label: 'Design Awards' },
 ]
 
+const heroImages = [
+  '/BEDROOMS/MASTER%20BED_1%20-%20Photo.png',
+  '/BEDROOMS/MASTER%20BED_2%20-%20Photo.png',
+  '/BEDROOMS/MASTER%20BED_3%20-%20Photo.png',
+  '/BEDROOMS/MASTER%20BED_4%20-%20Photo.png',
+  '/BEDROOMS/MASTER%20BED_5%20-%20Photo.png',
+]
+
 const featuredProjects = [
   {
-    title: 'Modern Villa',
-    category: 'Residential',
-    image: '/projects/villa.jpg',
+    title: 'Spa Retreat Ensuite',
+    category: 'Bathrooms',
+    image: '/BATHROOMS/bathroom_1%20-%20Photo.png',
   },
   {
-    title: 'Luxury Hotel',
-    category: 'Commercial',
-    image: '/projects/hotel.jpg',
+    title: 'Contemporary Master Suite',
+    category: 'Bedrooms',
+    image: '/BEDROOMS/master%20bedroom_1%20-%20Photo.png',
   },
   {
-    title: 'Urban Apartment',
-    category: 'Residential',
-    image: '/projects/apartment.jpg',
+    title: 'Gourmet Entertainer Kitchen',
+    category: 'Kitchen & Dining',
+    image: '/KITCHEN%20and%20DINING/KITCHEN_5%20-%20Photo.png',
   },
 ]
+
+const signatureSpaces = [
+  {
+    title: 'Sanctuary Bathrooms',
+    description: 'Marble-clad oases with bespoke vanities and warm lighting.',
+    image: '/BATHROOMS/bathroom_2%20-%20Photo.png',
+  },
+  {
+    title: 'Curated Bedrooms',
+    description: 'Layered textures and couture built-ins for restful suites.',
+    image: '/BEDROOMS/GUEST%20BEDROOM_2%20-%20Photo.png',
+  },
+  {
+    title: 'Statement Foyers',
+    description: 'Grand entrances with sculptural lighting and art moments.',
+    image: '/FOYERS/FOYER%20REV_1%20-%20Photo.png',
+  },
+  {
+    title: 'Elevated Dining',
+    description: 'Tailored for conversation, from bespoke banquettes to wine walls.',
+    image: '/KITCHEN%20and%20DINING/KITCHEN_8%20-%20Photo.png',
+  },
+  {
+    title: 'Corporate Luxury',
+    description: 'Lehigh reception concepts that merge hospitality and brand.',
+    image: '/LEHIGH/RECEPTION%20FINAL_7%20-%20Photo.png',
+  },
+  {
+    title: 'Executive Offices',
+    description: 'Boardroom timber, brass, and panoramic glazing for focus.',
+    image: '/OFFICE/office%20and%20bbq_1%20-%20Photo.png',
+  },
+  {
+    title: 'Outdoor Living',
+    description: 'Pools, pergolas, and lounges that glow after dusk.',
+    image: '/OUTDOOR/updated_5%20-%20Photo.png',
+  },
+  {
+    title: 'Sacred Spaces',
+    description: 'Prayer rooms with serene palettes and intricate detailing.',
+    image: '/PRAYER%20ROOM/prayer%20room_2%20-%20Photo.png',
+  },
+]
+
+const collageImages = {
+  primary: '/BEDROOMS/MASTER%20BED_3%20-%20Photo.png',
+  secondary: '/KITCHEN%20and%20DINING/pano_1%20-%20Photo.png',
+  accent: '/OUTDOOR/jacuzzi%20rev_2%20-%20Photo.png',
+}
 
 export default function HomePage() {
   const { scrollYProgress } = useScroll()
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
   const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.8])
   const [mounted, setMounted] = React.useState(false)
+  const [currentHeroIndex, setCurrentHeroIndex] = React.useState(0)
 
   React.useEffect(() => {
     setMounted(true)
+  }, [])
+
+  React.useEffect(() => {
+    const interval = window.setInterval(() => {
+      setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length)
+    }, 7000)
+
+    return () => window.clearInterval(interval)
   }, [])
 
   return (
     <LuxuryLayout>
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 -z-10">
+          {heroImages.map((image, index) => (
+            <motion.div
+              key={image}
+              className="absolute inset-0"
+              animate={
+                index === currentHeroIndex
+                  ? { opacity: 1, scale: [1.12, 1] }
+                  : { opacity: 0, scale: 1.08 }
+              }
+              transition={{
+                duration: index === currentHeroIndex ? 7 : 1.2,
+                ease: 'easeInOut',
+              }}
+            >
+              <Image
+                src={image}
+                alt={`Luxury master bedroom ${index + 1}`}
+                fill
+                priority={index === 0}
+                sizes="100vw"
+                className="object-cover"
+              />
+            </motion.div>
+          ))}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/45 to-background/95" />
+        </div>
         <motion.div
           style={{ opacity, scale }}
-          className="container px-6 py-20 text-center"
+          className="container px-6 py-20 text-center relative z-10 text-white"
         >
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -102,7 +196,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 text-balance"
+            className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 text-balance"
           >
             Transform your space into a masterpiece with our luxury tiles and
             bespoke interior design solutions.
@@ -164,6 +258,58 @@ export default function HomePage() {
             })}
           </div>
         </motion.div>
+      </section>
+
+      {/* Signature Spaces Section */}
+      <section className="py-20 bg-muted/20">
+        <div className="container px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-4">
+              Spaces We Curate
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              A glimpse into the bathrooms, bedrooms, foyers, kitchens, and beyond that define Elegant Tiles & Décor.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            {signatureSpaces.map((space, index) => (
+              <motion.div
+                key={space.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.05 }}
+              >
+                <Card className="border-0 shadow-lg hover:shadow-luxury-lg transition-all duration-500 group h-full flex flex-col overflow-hidden rounded-3xl">
+                  <div className="relative aspect-[4/3]">
+                    <Image
+                      src={space.image}
+                      alt={space.title}
+                      fill
+                      sizes="(min-width: 1280px) 30vw, (min-width: 768px) 45vw, 100vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/60" />
+                    <div className="absolute bottom-4 left-4 text-white font-playfair text-2xl">
+                      {space.title}
+                    </div>
+                  </div>
+                  <CardContent className="flex-1 flex items-center justify-center px-6 py-8 text-center">
+                    <p className="text-sm text-muted-foreground leading-relaxed text-balance">
+                      {space.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Stats Section */}
@@ -282,7 +428,14 @@ export default function HomePage() {
                 <Link href="/work" className="group block">
                   <Card className="overflow-hidden border-luxury hover:shadow-luxury-lg transition-all duration-300">
                     <div className="aspect-[4/3] relative overflow-hidden bg-muted">
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent z-10" />
+                      <Image
+                        src={project.image}
+                        alt={project.title}
+                        fill
+                        sizes="(min-width: 1024px) 33vw, 100vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent z-10" />
                       <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
                         <Badge variant="luxury" className="mb-2">
                           {project.category}
@@ -291,8 +444,6 @@ export default function HomePage() {
                           {project.title}
                         </h3>
                       </div>
-                      {/* Placeholder for image */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 group-hover:scale-110 transition-transform duration-500" />
                     </div>
                   </Card>
                 </Link>
@@ -370,9 +521,42 @@ export default function HomePage() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="relative"
+              className="grid grid-cols-2 gap-4"
             >
-              <div className="aspect-square rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 shadow-luxury-lg" />
+              <div className="col-span-2 relative rounded-3xl overflow-hidden shadow-luxury-lg">
+                <div className="aspect-[4/3] relative">
+                  <Image
+                    src={collageImages.primary}
+                    alt="Master bedroom suite by Elegant Tiles"
+                    fill
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/50" />
+                </div>
+              </div>
+              <div className="relative rounded-2xl overflow-hidden shadow-lg">
+                <div className="aspect-[3/4] relative">
+                  <Image
+                    src={collageImages.secondary}
+                    alt="Chef-grade kitchen installation"
+                    fill
+                    sizes="(min-width: 1024px) 25vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+              <div className="relative rounded-2xl overflow-hidden shadow-lg">
+                <div className="aspect-[3/4] relative">
+                  <Image
+                    src={collageImages.accent}
+                    alt="Outdoor spa terrace"
+                    fill
+                    sizes="(min-width: 1024px) 25vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>

@@ -20,33 +20,37 @@ const navigation = [
   { name: 'Contact', href: '/contact' },
 ]
 
+const headerBackgrounds: Record<string, string> = {
+  '/': '/BEDROOMS/MASTER%20BED_2%20-%20Photo.png',
+  '/services': '/KITCHEN%20and%20DINING/KITCHEN_6%20-%20Photo.png',
+  '/work': '/OUTDOOR/updated_4%20-%20Photo.png',
+  '/products': '/FOYERS/FOYER%20REV_3%20-%20Photo.png',
+  '/journal': '/LEHIGH/RECEPTION%20FINAL_9%20-%20Photo.png',
+  '/about': '/OFFICE/office%20and%20bbq_2%20-%20Photo.png',
+  '/contact': '/PRAYER%20ROOM/prayer%20room_3%20-%20Photo.png',
+}
+
 export function Header() {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
   const [theme, setTheme] = React.useState<'light' | 'dark'>('light')
   const { scrollY } = useScroll()
+  const currentBackground = headerBackgrounds[pathname] ?? headerBackgrounds['/']
   
   // Header background opacity based on scroll
   const headerOpacity = useTransform(scrollY, [0, 100], [0, 1])
   const headerBlur = useTransform(scrollY, [0, 100], [0, 10])
 
   React.useEffect(() => {
-    // Initialize theme from localStorage or system preference
+    // Initialize theme from localStorage, defaulting to light mode
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    
-    if (savedTheme) {
-      setTheme(savedTheme)
-      document.documentElement.classList.toggle('dark', savedTheme === 'dark')
-    } else if (systemPrefersDark) {
-      // If no saved preference, use system preference
-      setTheme('dark')
-      document.documentElement.classList.add('dark')
-      localStorage.setItem('theme', 'dark')
-    } else {
-      // Default to light
-      setTheme('light')
-      document.documentElement.classList.remove('dark')
+    const initialTheme = savedTheme ?? 'light'
+
+    setTheme(initialTheme)
+    document.documentElement.classList.toggle('dark', initialTheme === 'dark')
+
+    if (!savedTheme) {
+      localStorage.setItem('theme', initialTheme)
     }
   }, [])
 
@@ -66,8 +70,17 @@ export function Header() {
             (value) => `blur(${Math.max(value, 10)}px)`
           ),
         }}
-        className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 glass-liquid"
+        className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 glass-liquid overflow-hidden"
       >
+        <div
+          className="absolute inset-0 -z-10 opacity-60"
+          style={{
+            backgroundImage: `url(${currentBackground})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
+        <div className="absolute inset-0 -z-10 bg-background/80 backdrop-blur-2xl" />
         <nav className="container flex items-center justify-between py-4 px-6">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3">

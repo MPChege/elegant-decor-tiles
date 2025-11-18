@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Search, Filter, Grid3x3, List } from 'lucide-react'
 import { LuxuryLayout } from '@/components/layout/luxury-layout'
@@ -9,6 +10,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
+
+const heroBackground = '/BATHROOMS/bathroom_1%20-%20Photo.png'
 
 const categories = [
   'All',
@@ -100,8 +103,17 @@ export default function ProductsPage() {
   return (
     <LuxuryLayout>
       {/* Hero Section */}
-      <section className="py-20 md:py-32">
-        <div className="container px-6">
+      <section className="relative py-20 md:py-32 overflow-hidden">
+        <Image
+          src={heroBackground}
+          alt="Premium bathroom tile installation"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover absolute inset-0 -z-10"
+        />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/70 via-black/45 to-background/95" />
+        <div className="container px-6 text-white">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -111,7 +123,7 @@ export default function ProductsPage() {
             <h1 className="font-playfair text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
               Our <span className="text-luxury-gradient">Products</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground">
+            <p className="text-lg md:text-xl text-white/85">
               Premium tiles and materials from the world's finest manufacturers.
             </p>
           </motion.div>

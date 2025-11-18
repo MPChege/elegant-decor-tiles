@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react'
 import { LuxuryLayout } from '@/components/layout/luxury-layout'
@@ -9,6 +10,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent } from '@/components/ui/card'
+
+const heroBackground = '/PRAYER%20ROOM/prayer%20room_1%20-%20Photo.png'
 
 const contactInfo = [
   {
@@ -42,17 +45,44 @@ export default function ContactPage() {
     message: '',
   })
   const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const [submitSuccess, setSubmitSuccess] = React.useState(false)
+  const [submitError, setSubmitError] = React.useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    
-    // TODO: Implement form submission to Supabase
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    
-    console.log('Form submitted:', formData)
-    setFormData({ name: '', email: '', phone: '', subject: '', message: '' })
-    setIsSubmitting(false)
+    setSubmitError(null)
+
+    try {
+      const response = await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          type: 'general',
+        }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to send message')
+      }
+
+      setSubmitSuccess(true)
+      setFormData({ name: '', email: '', phone: '', subject: '', message: '' })
+
+      // Hide success message after 5 seconds
+      setTimeout(() => {
+        setSubmitSuccess(false)
+      }, 5000)
+    } catch (error: any) {
+      setSubmitError(error.message)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleChange = (
@@ -64,8 +94,17 @@ export default function ContactPage() {
   return (
     <LuxuryLayout>
       {/* Hero Section */}
-      <section className="py-20 md:py-32">
-        <div className="container px-6">
+      <section className="relative py-20 md:py-32 overflow-hidden">
+        <Image
+          src={heroBackground}
+          alt="Serene consultation lounge"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover absolute inset-0 -z-10"
+        />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/70 via-black/40 to-background/95" />
+        <div className="container px-6 text-white">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -75,7 +114,7 @@ export default function ContactPage() {
             <h1 className="font-playfair text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
               Get In <span className="text-luxury-gradient">Touch</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground">
+            <p className="text-lg md:text-xl text-white/85">
               Let's discuss how we can transform your space into something
               extraordinary.
             </p>
@@ -132,6 +171,22 @@ export default function ContactPage() {
                 Send Us a Message
               </h2>
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Success Message */}
+                {submitSuccess && (
+                  <div className="p-4 rounded-lg bg-green-50 border border-green-200">
+                    <p className="text-sm text-green-800 font-medium">
+                      ✓ Message sent successfully! We'll get back to you soon.
+                    </p>
+                  </div>
+                )}
+
+                {/* Error Message */}
+                {submitError && (
+                  <div className="p-4 rounded-lg bg-red-50 border border-red-200">
+                    <p className="text-sm text-red-800">{submitError}</p>
+                  </div>
+                )}
+
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name *</Label>
                   <Input

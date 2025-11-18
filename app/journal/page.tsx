@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Clock, User, ArrowRight, Search } from 'lucide-react'
 import { LuxuryLayout } from '@/components/layout/luxury-layout'
@@ -9,6 +10,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
+
+const heroBackground = '/LEHIGH/RECEPTION%20FINAL_5%20-%20Photo.png'
 
 const articles = [
   {
@@ -101,8 +104,17 @@ export default function JournalPage() {
   return (
     <LuxuryLayout>
       {/* Hero Section */}
-      <section className="py-20 md:py-32">
-        <div className="container px-6">
+      <section className="relative py-20 md:py-32 overflow-hidden">
+        <Image
+          src={heroBackground}
+          alt="Design studio moodboard"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover absolute inset-0 -z-10"
+        />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/75 via-black/45 to-background/95" />
+        <div className="container px-6 text-white">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -112,18 +124,18 @@ export default function JournalPage() {
             <h1 className="font-playfair text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
               Design <span className="text-luxury-gradient">Journal</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mb-8">
+            <p className="text-lg md:text-xl text-white/85 mb-8">
               Insights, trends, and inspiration from our design experts.
             </p>
 
             {/* Search */}
             <div className="relative max-w-md mx-auto">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />
               <Input
                 placeholder="Search articles..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="pl-10 bg-white/85 border-white/60 text-primary placeholder:text-primary/60 focus-visible:ring-primary/40"
               />
             </div>
           </motion.div>
