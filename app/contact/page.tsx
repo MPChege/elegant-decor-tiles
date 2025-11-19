@@ -13,21 +13,36 @@ import { Card, CardContent } from '@/components/ui/card'
 
 const heroBackground = '/PRAYER%20ROOM/prayer%20room_1%20-%20Photo.png'
 
+const locations = [
+  {
+    city: 'Nairobi',
+    address: 'Mageta road, Lavington, Nairobi Kenya',
+    phone: '+254 710 602110',
+    email: 'info@elegantdecor.co.ke',
+  },
+  {
+    city: 'Thika',
+    address: 'Giant complex, Thika road, Thika Kenya',
+    phone: '+254 710 602110',
+    email: 'info@elegantdecor.co.ke',
+  },
+]
+
 const contactInfo = [
   {
     icon: Phone,
     title: 'Phone',
-    details: ['+254 700 000 000', '+254 711 000 000'],
+    details: ['+254 710 602110'],
   },
   {
     icon: Mail,
     title: 'Email',
-    details: ['hello@eleganttiles.co.ke', 'info@eleganttiles.co.ke'],
+    details: ['info@elegantdecor.co.ke'],
   },
   {
     icon: MapPin,
-    title: 'Address',
-    details: ['123 Design Street', 'Karen, Nairobi, Kenya'],
+    title: 'Locations',
+    details: ['Nairobi: Mageta road, Lavington', 'Thika: Giant complex, Thika road'],
   },
   {
     icon: Clock,
@@ -125,7 +140,7 @@ export default function ContactPage() {
       {/* Contact Info Cards */}
       <section className="py-12 bg-muted/30">
         <div className="container px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {contactInfo.map((info, index) => (
               <motion.div
                 key={info.title}
@@ -148,6 +163,39 @@ export default function ContactPage() {
                         {detail}
                       </p>
                     ))}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Locations */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {locations.map((location, index) => (
+              <motion.div
+                key={location.city}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <Card className="h-full border-luxury hover:shadow-luxury-lg transition-all">
+                  <CardContent className="p-6">
+                    <h3 className="font-playfair text-2xl font-bold mb-4">{location.city}</h3>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3">
+                        <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                        <span className="text-muted-foreground">{location.address}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Phone className="h-5 w-5 text-primary flex-shrink-0" />
+                        <a href={`tel:${location.phone.replace(/\s/g, '')}`} className="text-muted-foreground hover:text-primary">{location.phone}</a>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Mail className="h-5 w-5 text-primary flex-shrink-0" />
+                        <a href={`mailto:${location.email}`} className="text-muted-foreground hover:text-primary">{location.email}</a>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>

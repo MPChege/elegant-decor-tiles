@@ -3,8 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Check } from 'lucide-react'
-import { productsAPI } from '@elegant/shared/lib/api'
-import type { Product } from '@elegant/shared/types/database.types'
+import { fetchPublicProduct, fetchPublicProducts, type PublicProduct } from '@/lib/public-api'
 import { LuxuryLayout } from '@/components/layout/luxury-layout'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -20,9 +19,9 @@ interface ProductDetailPageProps {
   params: Promise<{ id: string }>
 }
 
-async function getProductBySlug(slug: string): Promise<Product | null> {
+async function getProductBySlug(slug: string): Promise<PublicProduct | null> {
   try {
-    const product = await productsAPI.getBySlug(slug)
+    const product = await fetchPublicProduct(slug)
     return product
   } catch {
     return null
@@ -61,11 +60,11 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     (product.specifications as Record<string, unknown> | null) ?? {}
 
   // Fetch a few related products (simple heuristic: same category, different id)
-  let related: Product[] = []
+  let related: PublicProduct[] = []
   try {
-    const all = await productsAPI.getPublished()
+    const all = await fetchPublicProducts({ category: product.category })
     related = all
-      .filter((p) => p.id !== product.id && p.category === product.category)
+      .filter((p) => p.id !== product.id)
       .slice(0, 3)
   } catch {
     related = []

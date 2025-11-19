@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { projectsAPI } from '@elegant/shared/lib/api';
+import { getPublicMediaUrl } from '@/lib/s3/getPublicUrl';
 import type { PublicProject } from '@/lib/public-api';
 
 /**
@@ -14,19 +15,28 @@ export async function GET(
     const { slug } = await context.params;
     const project = await projectsAPI.getBySlug(slug);
 
-    // Map database format to public API format
+    // Convert image keys to full URLs
+    const images = (project.images || []).map((img) => getPublicMediaUrl(img));
+    const featuredImage = project.featured_image 
+      ? getPublicMediaUrl(project.featured_image)
+      : images[0] || null;
+
+    // Map database format to public API format with full image URLs
     const publicProject: PublicProject = {
       id: project.id,
       title: project.title,
       slug: project.slug,
-      description: project.description,
+      description: project.description || null,
+      short_description: project.short_description || null,
       client_name: project.client_name || null,
       location: project.location || null,
       year: project.year || null,
-      featured_image: project.featured_image,
-      featured_image_key: project.featured_image, // Use featured_image as key if it's a path
-      images: project.images || [],
+      completion_date: project.completion_date || null,
+      featured_image: featuredImage,
+      featured_image_key: project.featured_image || null,
+      images: images,
       tags: project.tags || [],
+      featured: project.featured || false,
       seo_title: null, // Projects table doesn't have seo_title field
       seo_description: null, // Projects table doesn't have seo_description field
     };

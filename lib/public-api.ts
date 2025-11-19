@@ -1,5 +1,26 @@
 import 'server-only'
 
+export interface PublicProduct {
+  id: string
+  title: string
+  slug: string
+  description: string | null
+  category: string
+  subcategory: string | null
+  price: number | null
+  currency: string
+  featured_image: string | null
+  images: string[]
+  tags: string[]
+  featured: boolean
+  in_stock: boolean
+  specifications: any
+  seo_title: string | null
+  seo_description: string | null
+  created_at: string
+  updated_at: string
+}
+
 export interface PublicBlogPost {
   id: string
   title: string
@@ -23,13 +44,16 @@ export interface PublicProject {
   title: string
   slug: string
   description: string | null
+  short_description?: string | null
   client_name?: string | null
   location?: string | null
   year?: number | null
+  completion_date?: string | null
   featured_image_key?: string | null
   featured_image?: string | null
   images?: string[]
   tags?: string[]
+  featured?: boolean
   seo_title?: string | null
   seo_description?: string | null
 }
@@ -41,6 +65,82 @@ function getBaseUrl() {
     process.env.NEXT_PUBLIC_SITE_URL ||
     'http://localhost:3001'
   )
+}
+
+export interface ProductsResponse {
+  success: boolean
+  data: PublicProduct[]
+  meta: {
+    total: number
+    limit: number
+    offset: number
+  }
+}
+
+export interface ProductResponse {
+  success: boolean
+  data: PublicProduct
+}
+
+export async function fetchPublicProducts(filters?: {
+  limit?: number
+  offset?: number
+  category?: string
+  featured?: boolean
+  in_stock?: boolean
+}): Promise<PublicProduct[]> {
+  try {
+    const params = new URLSearchParams()
+    if (filters?.limit) params.set('limit', filters.limit.toString())
+    if (filters?.offset) params.set('offset', filters.offset.toString())
+    if (filters?.category) params.set('category', filters.category)
+    if (filters?.featured) params.set('featured', 'true')
+    if (filters?.in_stock) params.set('in_stock', 'true')
+
+    const res = await fetch(`${getBaseUrl()}/api/public/products?${params}`, {
+      next: { revalidate: 60 },
+    })
+
+    if (!res.ok) {
+      console.error('Failed to fetch products:', res.status, await res.text())
+      return []
+    }
+
+    const json = (await res.json()) as ProductsResponse
+
+    if (!json.success || !json.data) return []
+    return json.data
+  } catch (error) {
+    console.error('Error fetching products:', error)
+    return []
+  }
+}
+
+export async function fetchPublicProduct(
+  slug: string
+): Promise<PublicProduct | null> {
+  try {
+    const res = await fetch(`${getBaseUrl()}/api/public/products/${slug}`, {
+      next: { revalidate: 60 },
+    })
+
+    if (res.status === 404) {
+      return null
+    }
+
+    if (!res.ok) {
+      console.error('Failed to fetch product:', res.status, await res.text())
+      return null
+    }
+
+    const json = (await res.json()) as ProductResponse
+
+    if (!json.success || !json.data) return null
+    return json.data
+  } catch (error) {
+    console.error('Error fetching product:', error)
+    return null
+  }
 }
 
 export async function fetchPublicBlogPosts(): Promise<PublicBlogPost[]> {

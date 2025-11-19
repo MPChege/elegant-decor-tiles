@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Search, Filter, Grid3x3, List } from 'lucide-react'
-import type { Product } from '@elegant/shared/types/database.types'
+import type { PublicProduct } from '@/lib/public-api'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -24,7 +24,7 @@ const categories = [
 ]
 
 interface ProductsPageClientProps {
-  products: Product[]
+  products: PublicProduct[]
 }
 
 export function ProductsPageClient({ products }: ProductsPageClientProps) {

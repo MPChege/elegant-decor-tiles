@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { blogAPI } from '@elegant/shared/lib/api';
+import { getPublicMediaUrl } from '@/lib/s3/getPublicUrl';
 import type { PublicBlogPost } from '@/lib/public-api';
 
 /**
@@ -14,23 +15,23 @@ export async function GET(
     const { slug } = await context.params;
     const post = await blogAPI.getBySlug(slug);
 
-    // Map database format to public API format
+    // Map database format to public API format with full image URLs
     const publicPost: PublicBlogPost = {
       id: post.id,
       title: post.title,
       slug: post.slug,
-      excerpt: post.excerpt,
+      excerpt: post.excerpt || null,
       content: post.content,
-      featured_image: post.featured_image,
-      featured_image_key: post.featured_image, // Use featured_image as key if it's a path
+      featured_image: post.featured_image ? getPublicMediaUrl(post.featured_image) : null,
+      featured_image_key: post.featured_image || null,
       images: [], // Blog posts don't have images array in DB, but we can extend this later
       tags: post.tags || [],
       category: post.category || null,
       published: post.published,
       published_at: post.published_at || post.publish_date || null,
-      read_time: post.read_time,
-      seo_title: post.seo_title,
-      seo_description: post.seo_description,
+      read_time: post.read_time || null,
+      seo_title: post.seo_title || null,
+      seo_description: post.seo_description || null,
     };
 
     return NextResponse.json({

@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
+import { useToast } from '@/hooks/use-toast'
 
 const footerLinks = {
   company: [
@@ -49,6 +50,7 @@ export function Footer() {
   const [email, setEmail] = React.useState('')
   const [isSubmitting, setIsSubmitting] = React.useState(false)
   const [theme, setTheme] = React.useState<'light' | 'dark'>('light')
+  const { toast } = useToast()
 
   React.useEffect(() => {
     // Get theme from document
@@ -68,10 +70,37 @@ export function Footer() {
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    // TODO: Implement newsletter subscription
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    setEmail('')
-    setIsSubmitting(false)
+
+    try {
+      const response = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to subscribe')
+      }
+
+      toast({
+        title: 'Success!',
+        description: data.message || 'Subscribed successfully',
+      })
+
+      setEmail('')
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to subscribe. Please try again.',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -119,21 +148,23 @@ export function Footer() {
                 </div>
               </Link>
               <p className="text-muted-foreground mb-6">
-                Award-winning interior design and décor company specializing in
-                luxury tiles and custom design projects.
+                We specialize in full range of home & Office interiors, Imported fully fitted Kitchens, Bathroom Vanity sets, and much more.
               </p>
               <div className="space-y-3">
-                <div className="flex items-center space-x-3 text-sm">
-                  <MapPin className="h-4 w-4 text-primary" />
-                  <span>123 Design Street, Nairobi, Kenya</span>
+                <div className="flex items-start space-x-3 text-sm">
+                  <MapPin className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <div>Mageta road, Lavington, Nairobi, Kenya</div>
+                    <div className="text-muted-foreground">Giant complex, Thika road, Thika, Kenya</div>
+                  </div>
                 </div>
                 <div className="flex items-center space-x-3 text-sm">
-                  <Phone className="h-4 w-4 text-primary" />
-                  <span>+254 700 000 000</span>
+                  <Phone className="h-4 w-4 text-primary flex-shrink-0" />
+                  <a href="tel:+254710602110" className="hover:text-primary">+254 710 602110</a>
                 </div>
                 <div className="flex items-center space-x-3 text-sm">
-                  <Mail className="h-4 w-4 text-primary" />
-                  <span>hello@eleganttiles.co.ke</span>
+                  <Mail className="h-4 w-4 text-primary flex-shrink-0" />
+                  <a href="mailto:info@elegantdecor.co.ke" className="hover:text-primary">info@elegantdecor.co.ke</a>
                 </div>
               </div>
             </motion.div>
